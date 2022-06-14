@@ -1,5 +1,5 @@
 # FirstAnsible
-### this is my first project related to ansible playbook.
-i firstly created all the instances by the ssh private key stored with the files here u can check them always for run 
-and then created the inventory
+### this project related to setting up awareness application.
+first of all we have a variable file that contains the urls for the application and images which is called 
+- vars.yml
 thank you very
