@@ -1,0 +1,12 @@
+---
+
+#########
+#these lines for preparing the deployment 
+##
+
+- name: uncompressing the package
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: 
+      command: tar

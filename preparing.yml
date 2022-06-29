@@ -1,0 +1,87 @@
+#######################################################################
+# please pay attention to the following steps in order to deploy 
+# AWR with the right version and the right configuration:
+# 1- make sure that you specify the right versoin of AWR in the
+#    var file in order not to setting up the wrong one
+# 2- make sure that you have configures the ssh key to the same name as
+#    the controlled machine to avoid the error of the security there. 
+# 3- if the user created in the remote pc is not set as a root it 
+#    will fail.      
+######################################################################### 
+---
+- name: preparing invironment for ubuntu OS
+  hosts: localhost
+  become: yes	
+  
+  vars_files:
+    - ./vars.yml
+  tasks:
+##
+#this is for making sure that older versions of docker are uninstalled
+##
+   - name: Deleteing older versions from Docker
+     apt:
+       name: "{{ item }}"
+       state: absent
+     with_items:
+       - docker.io
+       - docker.ce
+
+   - name: updating packages 
+     apt:
+       update_cache: yes
+########  
+   - name: installing Docker
+     apt: 
+       name: "{{ item }}"
+       state: latest
+     with_items:
+       - docker.io
+       - docker-compose    
+     when: ansible_distribution == "Ubuntu"
+   
+##################################
+#installing invironment for debian#
+##################################
+   - name: preparing invornment for fedora & debian
+     yum:
+       name: "{{ item }}"
+       state: latest
+       with_items:
+         - docker.io
+         - docker.ce
+         - docker-compose
+     when: ansible_distribution == "fedora"
+############################################      
+#adding the current user to the docker group#
+############################################
+   - name: adding current user to the Docker group
+     user:
+       name: zinad
+       groups: docker
+       append: yes
+     #command: newgrp docker
+##############################
+# downloading awareness images#
+#############################
+
+   - name: Downloading Awareness Images
+     get_url: 
+       url: "{{ images_url }}"
+       dest: ~/ 
+###############################
+# Downloading Awareness package#
+###############################
+   - name: Downloading Awareness Package
+     get_url:
+       url: "{{ awareness_pack }}"
+       dest: ~/
+########################     
+#uncompressing the files#      
+########################
+   - name: uncompressing the tar files
+     command: tar xzvf ~/awareness.gz ~
+
+#####################
+#
+####################
