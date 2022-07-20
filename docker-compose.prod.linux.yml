@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  db:
+    image: zisoft/awareness/db
+    environment:
+      - MYSQL_USER=${DB_USERNAME_USER}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "22022:3306"
+    volumes:
+      - ./storage/database:/var/lib/mysql
+  web:
+    image: zisoft/awareness/web
+    volumes:
+      - "./:/var/www/html/"
+      - "./httpd.conf:/etc/httpd/conf/httpd.conf"
+      - "./devops/php.ini:/etc/php.ini"
+  ui:
+    image: zisoft/awareness/ui
+    volumes:
+      - "./ui/httpd.conf:/usr/local/apache2/conf/httpd.conf"
+      - "./ui/dist:/usr/local/apache2/htdocs/"
+  worker:
+    image: zisoft/awareness/worker
+    volumes:
+      - "./:/var/www/html/"
+  meta:
+    image: metabase/metabase:v0.42.2
+    environment:
+      - MB_DB_FILE=/tmp/metabase.db
+    volumes:
+      - ./metabase:/tmp
+  # nginx:
+  #   image: registry.gitlab.com/zisoft/awareness/ingress:latest
+  #   container_name: webserver
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./ui/dist:/var/www/html
+  #     - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+  #     - ./nginx/:/etc/nginx/conf.d
+  proxy:
+    image: httpd:2.4.52
+    ports:
+      - "80:80"
+      - "443:443"    
+    volumes:
+      - ./proxy/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./proxy/index.html:/usr/local/apache2/htdocs/index.html
+      - ./proxy/httpd-ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf
+      - ./ssl/server.crt:/usr/local/apache2/conf/server.crt
+      - ./ssl/server.key:/usr/local/apache2/conf/server.key
+      - ./ssl/server.chain.crt:/usr/local/apache2/conf/server-ca.crt
+  cron:
+    image: zisoft/awareness/cron

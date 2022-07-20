@@ -1,2 +1,6 @@
 
 images_url: https://zisoft-images.s3.eu-west-1.amazonaws.com/Docker-images/docker_images-16-feb-2022.gz
+
+awareness_pack: https://zi-release.s3.eu-west-1.amazonaws.com/awareness/awarnesslatest.tar.gz
+
+domain_name: *

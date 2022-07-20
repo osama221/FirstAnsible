@@ -1,0 +1,33 @@
+---
+- name: trials
+  hosts: localhost
+  become: yes
+
+  tasks:
+   # - name: changing the last line
+    #  lineinfile:
+     #   path: ~/awareness/.env
+     #   state: absent
+     #   regexp: "DOMAIN_NAME='https://staging*"
+  #  - name: changing the last line with some text else
+   #   replace:
+    #    path: ~/awareness/.env
+     #   regexp: "https://staging.awareness.firmcom.net"
+      #  replace: "https://osama.net" 
+    
+    - name: changing web container hash
+      replace:
+        path: ~/awareness/docker-compose-prod.linux.yml
+        regexp: " web:
+                    image: zisoft/awareness/web
+                     volumes:
+                       - "./:/var/www/html/"
+                       - "./httpd.conf:/etc/httpd/conf/httpd.conf"
+                       - "./devops/php.ini:/etc/php.ini""
+        replace: 
+#"web:
+#    image: zisoft/awareness/web
+ #   volumes:
+  #    - "./:/var/www/html/"
+   #   - "./httpd.conf:/etc/httpd/conf/httpd.conf"
+    #  - "./devops/php.ini:/etc/php.ini""

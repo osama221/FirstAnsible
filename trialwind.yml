@@ -1,0 +1,8 @@
+---
+- name: installing winzip on windows
+  hosts: all
+  tasks:
+    - name: installing and preparing 
+      win_chocolatey:
+        name: 7zib
+        state: present

@@ -37,7 +37,8 @@
        state: latest
      with_items:
        - docker.io
-       - docker-compose    
+       - docker-compose
+       - docker swarm    
      when: ansible_distribution == "Ubuntu"
    
 ##################################
@@ -51,6 +52,7 @@
          - docker.io
          - docker.ce
          - docker-compose
+         - docker swarm
      when: ansible_distribution == "fedora"
 ############################################      
 #adding the current user to the docker group#
@@ -80,8 +82,17 @@
 #uncompressing the files#      
 ########################
    - name: uncompressing the tar files
-     command: tar xzvf ~/awareness.gz ~
+     unarchive:
+       src: ~/awarnesslatest.tar.gz
+       dest: ~/
+       mode: 0755
+    # command: tar xzvf ~/awareness.gz ~
 
 #####################
-#
+#editing the env file with the new domain name
 ####################
+   - name: changing the last line with some text else
+       replace:
+         path: ~/awareness/.env
+         regexp: "https://*"
+         replace: "{{ domain_name }}"
